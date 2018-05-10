@@ -120,8 +120,7 @@ def linear_solve(A, b, iterative=False, tol=1.e-8, x0=None):
     if iterative:
         # TODO: choose an appropriate value of maxiter to distribute work
         # between taking more steps and having a more accurate solution
-        dy, info = gmres(A, b, tol=solver_parameters['min_tol'], x0=x0,
-                         maxiter=100)
+        dy, info = gmres(A, b, tol=tol, x0=x0, maxiter=100)
         if info >0:
             print("Info: maximum iterations reached for sparse system solver (GMRES).")
         return dy
