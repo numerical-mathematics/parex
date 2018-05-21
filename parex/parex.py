@@ -40,7 +40,7 @@ def solve_implicit/explicit/semi-implicit(ode_fun, jac_fun, y_olds, t_old,
 
 from __future__ import division
 import numpy as np
-import multiprocessing as mp
+import pathos.multiprocessing as mp
 import math
 from scipy import optimize
 import scipy
@@ -507,6 +507,7 @@ def _extrapolation_parallel(ode_fun, tspan, y0, solver_args, solver=None,
     h = min(h0, t_max-t0)
 
     sum_ks, sum_hs = 0, 0
+    num_steps_rejected = 0
 
     # Initialize reject_step so that Jacobian is updated
     reject_step = True
@@ -542,6 +543,7 @@ def _extrapolation_parallel(ode_fun, tspan, y0, solver_args, solver=None,
         je_tot += je_tot_
         sum_ks += k
         sum_hs += h
+        num_steps_rejected += reject_step
 
         steps_taken += 1
 
@@ -567,7 +569,8 @@ def _extrapolation_parallel(ode_fun, tspan, y0, solver_args, solver=None,
     if diagnostics:
         infodict = {'fe_seq': fe_seq, 'nfe': fe_tot, 'nst': steps_taken,
                     'nje': je_tot, 'h_avg': sum_hs/steps_taken,
-                    'k_avg': sum_ks/steps_taken}
+                    'k_avg': sum_ks/steps_taken,
+                    'num_steps_rejected': num_steps_rejected}
         return (ys, infodict)
     else:
         return ys
