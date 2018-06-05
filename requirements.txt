@@ -1,2 +1,3 @@
 numpy>=1.6
 matplotlib>=1.2
+pathos>=0.2.1
